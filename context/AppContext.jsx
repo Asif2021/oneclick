@@ -1,8 +1,10 @@
 'use client'
 import { productsDummyData, userDummyData } from "@/assets/assets";
-import { useUser } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/nextjs";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export const AppContext = createContext();
 
@@ -32,9 +34,19 @@ export const AppContextProvider = (props) => {
             if(user.publicMetadata.role === "seller"){
             setIsSeller(true)
         }
-        setUserData(userDummyData)
+        // get the user data from api
+        const token = await getToken()
+        const {data} = await axios.get("/api/user/data",{headers: {Authorization: `Bearer ${token}`}})
+        if(data?.success){
+            setUserData(data.user)
+            setCartItems(data.user.cartItems)
+        } else {
+            toast.error(data?.message)
+        }
+        
         } catch (error) {
-            
+        toast.error(error.message)
+
         }
     }
 
