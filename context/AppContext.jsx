@@ -16,10 +16,11 @@ export const AppContextProvider = (props) => {
     const router = useRouter()
 // we will get data in this object whenever user logged in
     const { user } = useUser();
-
+    // by using getToken we can create multiple token for authentication with our next backend
+    const {getToken} = useAuth();
     const [products, setProducts] = useState([])
     const [userData, setUserData] = useState(false)
-    const [isSeller, setIsSeller] = useState(true)
+    const [isSeller, setIsSeller] = useState(false)
     const [cartItems, setCartItems] = useState({})
 
     const fetchProductData = async () => {
@@ -27,7 +28,14 @@ export const AppContextProvider = (props) => {
     }
 
     const fetchUserData = async () => {
+        try {
+            if(user.publicMetadata.role === "seller"){
+            setIsSeller(true)
+        }
         setUserData(userDummyData)
+        } catch (error) {
+            
+        }
     }
 
     const addToCart = async (itemId) => {
@@ -81,11 +89,13 @@ export const AppContextProvider = (props) => {
     }, [])
 
     useEffect(() => {
-        fetchUserData()
-    }, [])
+        if(user){
+            fetchUserData()
+        }
+    }, [user])
 
     const value = {
-        user,
+        user, getToken,
         currency, router,
         isSeller, setIsSeller,
         userData, fetchUserData,
