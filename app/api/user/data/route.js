@@ -7,8 +7,6 @@ import { NextResponse } from "next/server";
 // this is api to get user data
 export async function GET(request){
     try {
-        // integrate the api with frontend part
-        // pending code here
         const {userId} = getAuth(request)
         await connectDB()
         const user = await User.findById(userId)
