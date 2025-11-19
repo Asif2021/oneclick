@@ -67,7 +67,7 @@ export const syncUserDeletion = inngest.createFunction(
 export const createUserOrder = inngest.createFunction({
     id: 'create-user-order',
     batchEvents: {
-        maxSize: 25,
+        maxSize: 5,
         timeout: '5s'
     }
 },
@@ -79,7 +79,7 @@ export const createUserOrder = inngest.createFunction({
                 items: event.data.items,
                 amount: event.data.amount,
                 address: event.data.address,
-                date: event.data.data
+                date: event.data.date
             }
         })
         await connectDB()
